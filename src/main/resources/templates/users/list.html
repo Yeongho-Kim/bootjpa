@@ -17,12 +17,12 @@
               </thead>
               <tbody>
                 <tr th:each="user:${users}">
-                    <th scope="row">[[${user.uNum}]]</th>
+                    <td>[[${user.uNum}]]</td>
                     <td>[[${user.userId}]]</td>
                     <td>[[${user.userName}]]</td>
-                    <td>[[${user.userPhone}]]</td>
                     <td>[[${user.userEmail}]]</td>
-                    <td><a href="#" class="btn btn-success" role="button">수정</a></td>
+                    <td>[[${user.userPhone}]]</td>
+                    <td><a th:href="@{/users/update/{uNum}(uNum=${user.uNum})}" class="btn btn-success" role="button">수정</a></td>
                 </tr>
               </tbody>
           </table>
