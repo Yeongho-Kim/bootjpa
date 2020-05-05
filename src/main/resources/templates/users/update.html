@@ -23,6 +23,7 @@
                     <label for="email">이메일</label>
                     <input type="email" class="form-control" id="email" name="userEmail" th:value="${user.userEmail}">
                 </div>
+                <input type="hidden" th:name="${_csrf.getParameterName()}" th:value="${_csrf.token}">
                 <button type="submit" class="btn btn-success pull-right">수정</button>
             </form>
         </div>

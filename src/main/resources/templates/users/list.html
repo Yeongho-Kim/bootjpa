@@ -22,7 +22,9 @@
                     <td>[[${user.userName}]]</td>
                     <td>[[${user.userEmail}]]</td>
                     <td>[[${user.userPhone}]]</td>
+                    <th:block th:if="${#authentication.principal.uNum==user.uNum}">
                     <td><a th:href="@{/users/update/{uNum}(uNum=${user.uNum})}" class="btn btn-success" role="button">수정</a></td>
+                    </th:block>
                 </tr>
               </tbody>
           </table>
