@@ -10,11 +10,15 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Table(name="tbl_user_roles")
-@ToString
 public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roleNo;
 
     private String roleName;
+
+    @Override
+    public String toString() {
+        return roleName;
+    }
 }

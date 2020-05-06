@@ -1,18 +1,18 @@
 package com.web.controller;
 
 import com.web.domain.User;
+import com.web.domain.UserRole;
 import com.web.repository.UsersRepository;
 import com.web.security.CustomUser;
 import com.web.security.CustomUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -26,14 +26,15 @@ public class UserController {
 
     List<CustomUser> users=new ArrayList<CustomUser>();
 
-    @GetMapping("/form")
-    public void form(){
+    @GetMapping("/signUp")
+    public void signUp(){
 
     }
     @GetMapping("/list")
     public void list(Model model){
         model.addAttribute("users", usersRepository.findAll());
     }
+
     @PostMapping("/create")
     public String userCreate(User user){
         customUserDetailService.save(user);
@@ -50,6 +51,7 @@ public class UserController {
         user.setUserName(newUser.getUserName());
         user.setUserPhone(newUser.getUserPhone());
         user.setUserEmail(newUser.getUserEmail());
+
         usersRepository.save(user);
         return "redirect:/users/list";
     }

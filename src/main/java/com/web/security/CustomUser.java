@@ -18,6 +18,7 @@ public class CustomUser extends org.springframework.security.core.userdetails.Us
     private String userName;
     private String userEmail;
     private String userPhone;
+    private String userRole;
     private User user;
 
     public CustomUser(User user){
@@ -26,6 +27,7 @@ public class CustomUser extends org.springframework.security.core.userdetails.Us
         this.userName=user.getUserName();
         this.userPhone=user.getUserPhone();
         this.userEmail=user.getUserEmail();
+        this.userRole=user.getRoles().toString();
     }
 
     private static List<GrantedAuthority> makeGrantedAuthority(List<UserRole> roles) {

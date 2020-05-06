@@ -31,4 +31,5 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "user")
     private List<UserRole> roles;
+
 }

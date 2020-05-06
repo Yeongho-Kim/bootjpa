@@ -34,6 +34,10 @@
                     </div>
                 </form>
                 <ul class="nav navbar-nav navbar-right">
+                    <div class="nav navbar-nav" sec:authorize="isAuthenticated()">
+                        <label style="padding-top: 6px; color: #2a6496 ">[[${#authentication.principal.userName}]]
+                            [[${#authentication.principal.userRole}]]님<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;안녕하세요</label>
+                    </div>
                     <li>
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-bell"></i></a>
                         <ul class="dropdown-menu">
@@ -65,13 +69,9 @@
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse2">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="active"><a href="/qna/list">Board</a></li>
+                    <li class="active"><a href="/boards/list">Board</a></li>
                     <li sec:authorize="isAnonymous()"><a href="/users/login" role="button">로그인</a></li>
-                    <li sec:authorize="isAnonymous()"><a href="/users/form" role="button">회원가입</a></li>
-                    <!--
-                    <li><a href="#loginModal" role="button" data-toggle="modal">로그인</a></li>
-                    <li><a href="#registerModal" role="button" data-toggle="modal">회원가입</a></li>
-                    -->
+                    <li sec:authorize="isAnonymous()"><a href="/users/signUp" role="button">회원가입</a></li>
                     <li sec:authorize="isAuthenticated()">
                         <a href="#" onclick="document.getElementById('logout-form').submit();">로그아웃</a>
                         <form id="logout-form" action="/logout" method="POST">
@@ -79,12 +79,9 @@
                         </form>
                     </li>
                     <li sec:authorize="isAuthenticated()"><a th:href="@{/users/update/{uNum}(uNum=${#authentication.principal.uNum})}">마이페이지</a></li>
-
-
                 </ul>
             </div>
         </div>
     </div>
-
 </div>
 </html>
