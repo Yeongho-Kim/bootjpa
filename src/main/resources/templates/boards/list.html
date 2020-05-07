@@ -19,24 +19,24 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr class="odd gradeX" th:each="board:${result.content}">
-                        <td>[[${board.bno}]]</td>
-                        <td><a th:href="${board.bno}" class="boardLink">[[${board.title}]]</a></td>
-                        <td>[[${board.writer}]]</td>
-                        <td class="center">[[${#dates.format(board.regdate,'yyyy-MM-dd')}]]</td>
+                    <tr class="odd gradeX" th:each="arr:${result.content}">
+                        <td>[[${arr[0]}]]</td>
+                        <td><a th:href="${arr[0]}" class="boardLink">[[${arr[1]}]]</a>&nbsp;&nbsp;<span class="badge">[[${arr[2]}]]</span></td>
+                        <td>[[${arr[3]}]]</td>
+                        <td class="center">[[${#dates.format(arr[4],'yyyy-MM-dd')}]]</td>
                     </tr>
                     </tbody>
                 </table>
                 <!--검색창-->
-                <div>
-                    <select id='searchType'>
+                <div class="navbar-form pull-left">
+                    <select class="form-control" id='searchType'  >
                         <option>검색</option>
                         <option value='t' th:selected="${pageVO.type} =='t'">제목</option>
                         <option value='c' th:selected="${pageVO.type} =='c'">내용</option>
                         <option value='w' th:selected="${pageVO.type} =='w'">작성자</option>
                     </select>
-                    <input type='text' id='searchKeyword' th:value="${pageVO.keyword}">
-                    <button id='searchBtn'>검색</button>
+                    <input type='text' class="form-control" id='searchKeyword' placeholder="Search" th:value="${pageVO.keyword}">
+                    <button class="btn btn btn-primary" id='searchBtn'><i class="glyphicon glyphicon-search"></i></button>
                 </div>
             </div>
             <!--페이지네이션-->

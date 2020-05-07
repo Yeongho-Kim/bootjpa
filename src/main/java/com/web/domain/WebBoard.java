@@ -28,4 +28,6 @@ public class WebBoard {
     @CreationTimestamp
     private Timestamp updatedate;
 
+    @OneToMany(mappedBy = "board",fetch = FetchType.LAZY)
+    private List<WebReply> replies;
 }
