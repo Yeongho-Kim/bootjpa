@@ -8,11 +8,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
 
 @Log
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    DataSource dataSource;
     @Autowired
     private CustomUserDetailService customUserDetailService;
 
@@ -28,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/").invalidateHttpSession(true)
         .and()
                 .exceptionHandling().accessDeniedPage("/accessDenied");
-
+        http.rememberMe().userDetailsService(customUserDetailService).key("yh").tokenRepository(tokenRepository()).tokenValiditySeconds(60*60*24*7);
         http.userDetailsService(customUserDetailService);
     }
 
@@ -38,8 +43,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthenticationFailureHandler authenticationFailureHandler() {
-        return new CustomLoginFailureHandler();
+    public PersistentTokenRepository tokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource);
+        return jdbcTokenRepository;
     }
+
 
 }

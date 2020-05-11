@@ -1,5 +1,6 @@
 package com.web;
 
+import com.web.domain.User;
 import com.web.domain.WebBoard;
 import com.web.domain.WebReply;
 import com.web.repository.UsersRepository;
@@ -37,21 +38,8 @@ class BootjpaApplicationTests {
 
     @Test
     public void testReply(){
-        Long[] arr = new Long[50];
-        for(int i=0; i<50; i++){
-            arr[i]=(long)(i+250);
-        }
-
-        Arrays.stream(arr).forEach(num->{
-            WebBoard board=new WebBoard();
-            board.setBno(num);
-            IntStream.range(0,15).forEach(i->{
-                WebReply reply=new WebReply();
-                reply.setReplyText("테스트 리플입니다.");
-                reply.setReplyer("basic");
-                reply.setBoard(board);
-                webReplyRepository.save(reply);
-            });
-        });
+        int num=usersRepository.findCountByUserId("asddasdasxc");
+        System.out.println("☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★$☆★☆★☆★☆★☆★");
+        System.out.println(num);
     }
 }

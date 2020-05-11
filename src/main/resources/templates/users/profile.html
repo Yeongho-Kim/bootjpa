@@ -1,6 +1,46 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:insert="~{fragment/header::header}"></div>
+<!--<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="well well-sm">
+                <div class="row">
+                    <div class="col-sm-6 col-md-4">
+                        <img src="http://placehold.it/380x500" alt="" class="img-rounded img-responsive" />
+                    </div>
+                    <div class="col-sm-6 col-md-8">
+                        <h4>
+                            Bhaumik Patel</h4>
+                        <small><cite title="San Francisco, USA">San Francisco, USA <i class="glyphicon glyphicon-map-marker">
+                        </i></cite></small>
+                        <p>
+                            <i class="glyphicon glyphicon-envelope"></i>email@example.com
+                            <br />
+                            <i class="glyphicon glyphicon-globe"></i><a href="http://www.jquery2dotnet.com">www.jquery2dotnet.com</a>
+                            <br />
+                            <i class="glyphicon glyphicon-gift"></i>June 02, 1988</p>
+                        &lt;!&ndash; Split button &ndash;&gt;
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary">
+                                Social</button>
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span><span class="sr-only">Social</span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Twitter</a></li>
+                                <li><a href="https://plus.google.com/+Jquery2dotnet/posts">Google +</a></li>
+                                <li><a href="https://www.facebook.com/jquery2dotnet">Facebook</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Github</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
 
 <div class="container" id="main">
     <div class="col-md-6 col-md-offset-3">
@@ -9,16 +49,17 @@
             <div class="panel-body">
                 <div class="well well-sm">
                     <div class="media">
-                        <a class="thumbnail pull-left" href="#">
+                        <a class="thumbnail pull-left" style="width: 100px; height: 110px;" href="#">
                             <img src="/images/1587366113899.jpg"/>
                         </a>
-                        <div class="media-body">
-                            <h4 class="media-heading" th:text="${#authentication.principal.userName}"></h4>
-                            <p>
-                                <a th:text="${#authentication.principal.userEmail}" href="#" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-envelope"></span></a>
-                            </p>
-                            <h4 class="media-body" th:text="${#authentication.principal.userPhone}"></h4>
-                        </div>
+                        <h4>[[${#authentication.principal.userName}]]<small>&nbsp;&nbsp;&nbsp;&nbsp;성공회대학교 소프트웨어공학과 졸업</small></h4>
+                        <i class="glyphicon glyphicon-envelope"></i>
+                        <input type="text" id="emailCopy" class="btn btn-default" th:value="${#authentication.principal.userEmail}">
+                        <a id="copyResult" style="font-size: small"></a>
+                        <br/>
+                        <i class="fab fa-github"></i><a href="https://github.com/Youngho62/">https://github.com/Youngho62/</a>
+                        <br />
+                        <i class="glyphicon glyphicon-phone"></i>[[${#authentication.principal.userPhone}]]
                     </div>
                 </div>
             </div>
@@ -27,3 +68,15 @@
 </div>
 
 <div th:insert="~{fragment/footer::footer}"></div>
+
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $("#emailCopy").click(function (e) {
+            e.preventDefault();
+            var copyText = document.getElementById("emailCopy");
+            copyText.select();
+            document.execCommand("copy");
+            $("#copyResult").text("클립보드에 복사되었습니다.");
+        })
+    });
+</script>

@@ -1,7 +1,6 @@
 package com.web.controller;
 
 import com.web.domain.User;
-import com.web.domain.UserRole;
 import com.web.repository.UsersRepository;
 import com.web.security.CustomUser;
 import com.web.security.CustomUserDetailService;
@@ -10,9 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -69,6 +66,12 @@ public class UserController {
 
     }
 
+    @GetMapping("/idCheck")
+    @ResponseBody
+    public int idCheck(@RequestParam("userId") String userId){
+        int num=usersRepository.findCountByUserId(userId);
+        return num;
+    }
 
 
 }

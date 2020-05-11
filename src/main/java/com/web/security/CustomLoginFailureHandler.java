@@ -21,14 +21,17 @@ import java.io.IOException;
 @Getter
 @Setter
 public class CustomLoginFailureHandler implements AuthenticationFailureHandler {
-
+    String loginId;
+    String loginPw;
+    String failureUrl;
+    String errormsg;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        String loginId= request.getParameter("username");
-        String loginPw= request.getParameter("password");
-        String failureUrl="/users/login_failed";
-        String errormsg;
+        loginId= request.getParameter("username");
+        loginPw= request.getParameter("password");
+        failureUrl="/users/login_failed";
+        //errormsg;
 
         if(exception instanceof BadCredentialsException) {
             errormsg = "비밀번호가 일치하지 않습니다.";
