@@ -18,6 +18,8 @@ public class CustomUser extends org.springframework.security.core.userdetails.Us
     private String userName;
     private String userEmail;
     private String userPhone;
+    private String profilePhoto;
+    private String thumbnailUrl;
     private String userRole;
     private User user;
 
@@ -27,6 +29,8 @@ public class CustomUser extends org.springframework.security.core.userdetails.Us
         this.userName=user.getUserName();
         this.userPhone=user.getUserPhone();
         this.userEmail=user.getUserEmail();
+        this.profilePhoto=user.getProfilePhoto();
+        this.thumbnailUrl=user.getThumbnailUrl();
         this.userRole=user.getRoles().toString();
     }
 

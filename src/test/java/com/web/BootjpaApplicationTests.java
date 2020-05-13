@@ -1,8 +1,10 @@
 package com.web;
 
+import com.web.domain.Files;
 import com.web.domain.User;
 import com.web.domain.WebBoard;
 import com.web.domain.WebReply;
+import com.web.repository.FilesRepository;
 import com.web.repository.UsersRepository;
 import com.web.repository.WebBoardRepository;
 import com.web.repository.WebReplyRepository;
@@ -16,6 +18,9 @@ import java.util.stream.IntStream;
 @SpringBootTest
 class BootjpaApplicationTests {
     @Autowired
+    private FilesRepository filesRepository;
+
+    @Autowired
     private UsersRepository usersRepository;
 
     @Autowired
@@ -25,7 +30,7 @@ class BootjpaApplicationTests {
     private WebReplyRepository webReplyRepository;
     @Test
     void boardInsert() {
-        IntStream.range(21,300).forEach(i->{
+        IntStream.range(0,300).forEach(i->{
             WebBoard board= new WebBoard();
 
             board.setTitle("Test Title"+i);
@@ -41,5 +46,21 @@ class BootjpaApplicationTests {
         int num=usersRepository.findCountByUserId("asddasdasxc");
         System.out.println("☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★$☆★☆★☆★☆★☆★");
         System.out.println(num);
+    }
+
+    @Test
+    public void makeFiles(){
+        //IntStream.range(297,).forEach(i->{
+            WebBoard board=new WebBoard();
+            board.setBno((long)297);
+            for(int j=10;j<20;j++){
+                Files files=new Files();
+                files.setFileName("testFile.."+j);
+                files.setFileUrl("/upload");
+                files.setImage(false);
+                files.setBoard(board);
+                filesRepository.save(files);
+            }
+        //});
     }
 }

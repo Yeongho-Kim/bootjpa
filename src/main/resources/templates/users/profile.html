@@ -50,7 +50,7 @@
                 <div class="well well-sm">
                     <div class="media">
                         <a class="thumbnail pull-left" style="width: 100px; height: 110px;" href="#">
-                            <img src="/images/1587366113899.jpg"/>
+                            <img th:src="@{/users/thumbnail(filename=${#authentication.principal.thumbnailUrl})}"/>
                         </a>
                         <h4>[[${#authentication.principal.userName}]]<small>&nbsp;&nbsp;&nbsp;&nbsp;성공회대학교 소프트웨어공학과 졸업</small></h4>
                         <i class="glyphicon glyphicon-envelope"></i>

@@ -27,6 +27,8 @@ public class User {
     private String userName;
     private String userPhone;
     private String userEmail;
+    private String profilePhoto;
+    private String thumbnailUrl;
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "user")

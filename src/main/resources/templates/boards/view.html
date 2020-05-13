@@ -17,6 +17,11 @@
                 <textarea name="content" id="content" rows="5" class="form-control" th:text="${vo.content}" th:readonly="readonly"></textarea>
             </div>
             <div class="form-group">
+                <label for="files">첨부파일</label>
+                <div id="files"></div>
+            </div>
+            <div></div>
+            <div class="form-group">
                 <label for="writer">작성자</label>
                 <input name="writer" id="writer" class="form-control" th:value="${vo.writer}" th:readonly="readonly" >
             </div>
@@ -66,7 +71,6 @@
                 <div class="modal-body">
                     <label>댓글내용</label>
                     <input type="text" class="form-control" name='replyText'>
-
                     <label>작성자</label>
                     <input type="text" class="form-control" name='replyer' th:value="${#authentication.principal.username}" th:readonly="readonly">
                 </div>
@@ -83,6 +87,7 @@
 
 <div th:insert="~{fragment/footer::footer}"></div>
 <script th:inline="javascript" th:src="@{'/js/reply.js'}"></script>
+<script th:inline="javascript" th:src="@{'/js/files.js'}"></script>
 <script th:inline="javascript">
 
     $(document).ready(function (e){
@@ -94,6 +99,22 @@
         var rno;
         var uid =[[${#authentication.principal.username}]] ;
         var csrf = JSON.parse('[[${_csrf}]]');
+        (function getAllFiles(){
+            //load replies
+            fileManager.getAll(bno, getFiles);
+            function getFiles(list){
+                var str = "<ul>";
+                var fileObj;
+                for(var i = 0; i < list.length; i++){
+                    fileObj = list[i];
+                    str +=
+                        "<li style='display: inline-block; border: 1px solid #bcbcbc;padding: 7px;'>" +
+                        "<a href='#'>"+ fileObj.fileName+(fileObj.image?".img":".exe")+ "</a></li>";
+                }
+                str+="</ul>";
+                $("#files").html(str);
+            }
+        })();
 
         $("#replyTable").on("click", "tr", function(e){
 

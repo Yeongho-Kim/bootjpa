@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().accessDeniedPage("/accessDenied");
         http.rememberMe().userDetailsService(customUserDetailService).key("yh").tokenRepository(tokenRepository()).tokenValiditySeconds(60*60*24*7);
         http.userDetailsService(customUserDetailService);
+        http.csrf().ignoringAntMatchers("/users/update/**","/users/upload","/**");
     }
 
     @Bean
