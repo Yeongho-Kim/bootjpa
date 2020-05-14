@@ -3,8 +3,6 @@ package com.web;
 import com.web.domain.Files;
 import com.web.domain.User;
 import com.web.domain.WebBoard;
-import com.web.domain.WebReply;
-import com.web.repository.FilesRepository;
 import com.web.repository.UsersRepository;
 import com.web.repository.WebBoardRepository;
 import com.web.repository.WebReplyRepository;
@@ -12,14 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Arrays;
 import java.util.stream.IntStream;
 
 @SpringBootTest
 class BootjpaApplicationTests {
-    @Autowired
-    private FilesRepository filesRepository;
-
     @Autowired
     private UsersRepository usersRepository;
 
@@ -48,19 +42,25 @@ class BootjpaApplicationTests {
         System.out.println(num);
     }
 
+
     @Test
-    public void makeFiles(){
-        //IntStream.range(297,).forEach(i->{
-            WebBoard board=new WebBoard();
-            board.setBno((long)297);
-            for(int j=10;j<20;j++){
-                Files files=new Files();
-                files.setFileName("testFile.."+j);
-                files.setFileUrl("/upload");
-                files.setImage(false);
-                files.setBoard(board);
-                filesRepository.save(files);
+    public void makeUser(){
+        IntStream.range(0,100).forEach(i->{
+            User user=new User();
+            if(i<50){
+                user.setUserId("TEST_BASIC"+i);
+
+            }else if(i<90){
+                user.setUserId("TEST_MANAGER"+i);
+            }else{
+                user.setUserId("TEST_ADMIN"+i);
             }
-        //});
+            user.setUserPw("1234");
+            user.setUserName("TEST_USER"+i);
+            user.setUserPhone("01011112222");
+            user.setUserEmail("testEmail@google.com");
+            usersRepository.save(user);
+        });
+
     }
 }

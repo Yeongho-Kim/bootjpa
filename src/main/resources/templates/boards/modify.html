@@ -20,16 +20,6 @@
                     <label for="content">내용</label>
                     <textarea name="content" id="content" rows="5" class="form-control" th:text="${vo.content}"></textarea>
                 </div>
-                <!--upload-->
-                <div class='uploadDiv'>
-                    <input type='file' name='uploadFile' multiple>
-                </div>
-                <div class='uploadResult'>
-                    <ul>
-                    </ul>
-                </div>
-                <button id='uploadBtn'>Upload</button>
-                <!--upload end-->
                 <div class="form-group">
                     <label for="writer">작성자</label>
                     <input name="writer" id="writer" class="form-control" th:value="${vo.writer}" th:readonly="readonly" >
