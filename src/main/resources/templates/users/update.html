@@ -34,10 +34,14 @@
                         <button style="float: left" class="btn btn-primary" id="uploadBtn"><i class="glyphicon glyphicon-ok"></i>업로드</button>
                     </div>
                     <input type="text" class="form-control" id="profilePhoto" name="profilePhoto"
-                           th:placeholder="${(user.profilePhoto==null?'현재 프로필사진이 없습니다. 사진을 올려주세요.':'')}"
-                           th:value="${(user.profilePhoto==null?null:user.profilePhoto)}"
+                           th:placeholder="${(user.profilePhoto==''?'현재 프로필사진이 없습니다. 사진을 올려주세요.':'')}"
+                           th:value="${(user.profilePhoto==''?'':user.profilePhoto)}"
                            readonly="readonly">
-                    <a id="imageOrigin" href="#"><img th:src="@{/users/thumbnail(filename=${#authentication.principal.thumbnailUrl})}"/></a>
+                    <th:block th:if="${user.thumbnailUrl!=''}">
+                    <a id="imageOrigin" href="#"><img th:src="@{/users/thumbnail(filename=${user.thumbnailUrl})}"/></a>
+                    <a id="imageDel" href="#"><span>X</span></a>
+                    </th:block>
+
                     <input type="hidden" class="form-control" id="thumbnailUrl" name="thumbnailUrl">
                 </div>
                 <input type="hidden" th:name="${_csrf.getParameterName()}" th:value="${_csrf.token}">
@@ -66,13 +70,31 @@
         $("#imageOrigin").on("click",function (e) {
             e.preventDefault();
             var thumbPath = [[${#authentication.principal.thumbnailUrl}]];
-            var originPath = thumbPath.substr(0,10)+"\\"+thumbPath.substr(13,54);
+            var originPath = thumbPath.replace("s_","");
             originPath = originPath.replace(new RegExp(/\\/g),"/");
             $(".bigPictureWrapper").css("display","flex").show();
             $(".bigPicture")
                 .html("<img width='40%' height='80%' src='/users/thumbnail?filename="+encodeURI(originPath)+"'>")
                 .animate({width:'100%', height: '100%'}, 1000);
         });
+        $("#imageDel").on("click",function (e) {
+            e.preventDefault();
+            var thumbPath = [[${#authentication.principal.thumbnailUrl}]]
+            thumbPath=thumbPath.replace("/","\\");
+            var originPath = thumbPath.replace("s_","");
+            console.log(originPath);
+
+            $.ajax({
+                url:"/users/deleteImg",
+                type:"POST",
+                data:{thumbPath:thumbPath,originPath:originPath,uNum:[[${user.uNum}]]},
+                success:function (result) {
+                    $("#profilePhoto").attr("value","");
+                    alert(result);
+                }
+            });
+        });
+
         $(".bigPictureWrapper").on("click", function(e){
             $(this).hide();
         });

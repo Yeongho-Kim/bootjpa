@@ -5,12 +5,10 @@ import com.web.repository.UsersRepository;
 import com.web.security.CustomUser;
 import com.web.security.CustomUserDetailService;
 import com.web.vo.FileDTO;
-import net.coobird.thumbnailator.Thumbnailator;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
@@ -85,7 +82,7 @@ public class UserController {
 
 
     @GetMapping("/profile")
-    public void profile(){
+    public void profile(Model model){
 
     }
 
@@ -144,6 +141,28 @@ public class UserController {
         return result;
     }
 
+    @PostMapping("/deleteImg")
+    @ResponseBody
+    public String deleteImg(String thumbPath, String originPath,String uNum){
+        User user=usersRepository.findById((Long.parseLong(uNum))).get();
+
+        String uploadFolder="C:\\upload\\profile\\";
+        try{
+            File thumbFile=new File(uploadFolder+thumbPath);
+            thumbFile.delete();
+            user.setThumbnailUrl(null);
+
+            File originFile=new File(uploadFolder+originPath);
+            originFile.delete();
+            user.setProfilePhoto(null);
+
+            usersRepository.save(user);
+        }catch (Exception e){
+            e.printStackTrace();
+            return "실패";
+        }
+        return "삭제성공";
+    }
 
     private String getFolder() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

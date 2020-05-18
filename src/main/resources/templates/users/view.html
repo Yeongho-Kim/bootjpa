@@ -27,8 +27,8 @@
                 </div>
                 <div class="form-group">
                     <label for="profilePhoto">프로필</label>
-                    <input type="text" class="form-control" id="profilePhoto" th:placeholder="${(user.profilePhoto==null?'현재 프로필사진이 없습니다. 사진을 올려주세요.':user.profilePhoto)}" readonly="readonly">
-                    <th:block th:if="${user.thumbnailUrl!=null}">
+                    <input type="text" class="form-control" id="profilePhoto" th:placeholder="${(user.profilePhoto==''?'현재 프로필사진이 없습니다. 사진을 올려주세요.':user.profilePhoto)}" readonly="readonly">
+                    <th:block th:if="${user.thumbnailUrl!=''}">
                     <a id="imageOrigin"><img th:src="@{/users/thumbnail(filename=${user.thumbnailUrl})}"/></a>
                     </th:block>
                 </div>
@@ -45,7 +45,7 @@
     $("#imageOrigin").on("click",function (e) {
         e.preventDefault();
         var thumbPath = [[${user.thumbnailUrl}]];
-        var originPath = thumbPath.substr(0,10)+"\\"+thumbPath.substr(13,54);
+        var originPath = thumbPath.replace("s_","");
         originPath = originPath.replace(new RegExp(/\\/g),"/");
         $(".bigPictureWrapper").css("display","flex").show();
         $(".bigPicture")

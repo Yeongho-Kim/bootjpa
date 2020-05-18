@@ -27,7 +27,7 @@
                     <td>[[${user.userEmail}]]</td>
                     <td>[[${user.userPhone}]]</td>
                     <td>[[${user.roles}]]</td>
-                    <td style="color: #2a6496;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[${user.thumbnailUrl==null?"X":"O"}]]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td style="color: #2a6496;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[${(user.thumbnailUrl=="")||(user.thumbnailUrl==null)?"X":"O"}]]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     </tr>
                 </tbody>
             </table>
