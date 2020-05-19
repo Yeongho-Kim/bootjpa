@@ -3,6 +3,7 @@ package com.web;
 import com.web.domain.Files;
 import com.web.domain.User;
 import com.web.domain.WebBoard;
+import com.web.repository.FilesRepository;
 import com.web.repository.UsersRepository;
 import com.web.repository.WebBoardRepository;
 import com.web.repository.WebReplyRepository;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 
 @SpringBootTest
@@ -22,6 +25,17 @@ class BootjpaApplicationTests {
 
     @Autowired
     private WebReplyRepository webReplyRepository;
+
+    @Autowired
+    private FilesRepository filesRepository;
+
+
+    @Test
+    public void test(){
+        WebBoard board=boardRepository.findById(301L).get();
+        System.out.println(board.getTitle());
+        System.out.println(board.getFiles().isEmpty());
+    }
     @Test
     void boardInsert() {
         IntStream.range(0,300).forEach(i->{

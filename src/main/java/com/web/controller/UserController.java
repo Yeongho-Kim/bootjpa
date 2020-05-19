@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -120,7 +121,8 @@ public class UserController {
             uploadFile.transferTo(saveFile);
 
             //썸네일 생성
-            Thumbnails.of(saveFile).size(100,150).outputFormat("jpg").toFile(new File(uploadPath,"s_"+uploadFileName));
+            int idx_fileName=uploadFileName.indexOf(".")+1;
+            Thumbnails.of(saveFile).size(100,150).outputFormat(uploadFileName.substring(idx_fileName,uploadFileName.length())).toFile(new File(uploadPath,"s_"+uploadFileName));
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -143,18 +145,22 @@ public class UserController {
 
     @PostMapping("/deleteImg")
     @ResponseBody
-    public String deleteImg(String thumbPath, String originPath,String uNum){
+    public String deleteImg(String thumbPath,String uNum){
         User user=usersRepository.findById((Long.parseLong(uNum))).get();
-
         String uploadFolder="C:\\upload\\profile\\";
+        System.out.println("☆★☆★☆★☆★"+thumbPath+",,,,,,,,Unum:"+uNum);
         try{
-            File thumbFile=new File(uploadFolder+thumbPath);
+            String uploadFileName= (URLDecoder.decode(thumbPath, "UTF-8")).toString().replace("/","\\");
+            System.out.println("☆★☆★☆★☆★"+uploadFileName);
+            File thumbFile=new File(uploadFolder + uploadFileName);
             thumbFile.delete();
-            user.setThumbnailUrl(null);
-
-            File originFile=new File(uploadFolder+originPath);
-            originFile.delete();
             user.setProfilePhoto(null);
+
+            String largeFileName = thumbFile.getAbsolutePath().replace("s_", "");
+            System.out.println("☆★☆★☆★☆★"+largeFileName);
+            File originFile=new File(largeFileName);
+            originFile.delete();
+            user.setThumbnailUrl(null);
 
             usersRepository.save(user);
         }catch (Exception e){

@@ -69,8 +69,8 @@
         }
         $("#imageOrigin").on("click",function (e) {
             e.preventDefault();
-            var thumbPath = [[${#authentication.principal.thumbnailUrl}]];
-            var originPath = thumbPath.replace("s_","");
+            var thumbPath = [[${user.thumbnailUrl}]];
+            var originPath = thumbPath.toString().replace("/s_","/");
             originPath = originPath.replace(new RegExp(/\\/g),"/");
             $(".bigPictureWrapper").css("display","flex").show();
             $(".bigPicture")
@@ -79,15 +79,13 @@
         });
         $("#imageDel").on("click",function (e) {
             e.preventDefault();
-            var thumbPath = [[${#authentication.principal.thumbnailUrl}]]
-            thumbPath=thumbPath.replace("/","\\");
-            var originPath = thumbPath.replace("s_","");
-            console.log(originPath);
+            var thumbPath = [[${user.thumbnailUrl}]];
 
             $.ajax({
                 url:"/users/deleteImg",
                 type:"POST",
-                data:{thumbPath:thumbPath,originPath:originPath,uNum:[[${user.uNum}]]},
+                dataType:'text',
+                data:{thumbPath:thumbPath,uNum:[[${user.uNum}]]},
                 success:function (result) {
                     $("#profilePhoto").attr("value","");
                     alert(result);

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -18,7 +19,7 @@ public class Files {
     private Long fno;
 
     private String fileName;
-    private String fileUrl;
+    private String uploadUrl;
     private String uuid;
     private boolean image;
 

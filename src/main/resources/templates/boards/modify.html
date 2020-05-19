@@ -3,7 +3,24 @@
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
 <div th:insert="~{fragment/header::header}"></div>
-
+<style>
+    .uploadResult ul{
+        display:flex;
+        flex-flow: row;
+        justify-content: center;
+        align-items: center;
+    }
+    .uploadResult ul li {
+        list-style: none;
+        padding: 10px;
+        align-content: center;
+        text-align: center;
+    }
+</style>
+<div class='bigPictureWrapper'>
+    <div class='bigPicture'>
+    </div>
+</div>
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default content-main">
@@ -21,6 +38,16 @@
                     <textarea name="content" id="content" rows="5" class="form-control" th:text="${vo.content}"></textarea>
                 </div>
                 <div class="form-group">
+                    <div class="form-group uploadDiv">
+                        <label>첨부파일</label>
+                        <input type="file" name='uploadFile' multiple>
+                    </div>
+                    <div class="form-group uploadResult">
+                        <ul class="alert alert-info">
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label for="writer">작성자</label>
                     <input name="writer" id="writer" class="form-control" th:value="${vo.writer}" th:readonly="readonly" >
                 </div>
@@ -30,7 +57,7 @@
                 <input type='hidden' name="keyword" th:value="${pageVO.keyword}">
 
                 <input type="hidden" th:name="${_csrf.getParameterName()}" th:value="${_csrf.token}">
-                <button type="submit" class="btn btn-warning ">수정</button>
+                <button type="submit" class="btn btn-warning modbtn">수정</button>
                 <a href="#" class="btn btn-danger  delbtn">삭제</a>
                 <a th:href="@{ list(page=${pageVO.page},size=${pageVO.size}, type=${pageVO.type}, keyword=${pageVO.keyword},bno = ${vo.bno})}"
                    class="btn btn-primary">목록</a>
@@ -39,54 +66,147 @@
     </div>
 </div>
 <div th:insert="~{fragment/footer::footer}"></div>
-<script th:inline="javascript">
-    $(document).ready(function(){
-        var token = $("meta[name='_csrf']").attr("content");
-        var header = $("meta[name='_csrf_header']").attr("content");
+<script>
+    (function(){
+        var bno=[[${vo.bno}]];
+        $.getJSON("/files/getList", {bno: bno}, function (arr) {
+            console.log(arr);
+            var str = "";
+            $(arr).each(function (i, file) {
+                //image type
+                if (file.image) {
+                    var fileCallPath = encodeURIComponent(file.uploadUrl + "/s_" + file.uuid + "_" + file.fileName);
+                    str += "<li data-path='" + file.uploadUrl + "' data-uuid='" + file.uuid + "' data-filename='" + file.fileName + "' data-type='" + file.image + "' >";
+                    str += "<div><span> "+ file.fileName+"</span>";
+                    str += "<button type='button' data-fno=\'"+file.fno+"\' data-file=\'"+fileCallPath+"\' data-type='image' ";
+                    str += "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+                    str += "<img src='/files/display?fileName=" + fileCallPath + "'></div>";
+                    str += "</li>";
+                } else {
+                    str += "<li data-path='" + file.uploadUrl + "' data-uuid='" + file.uuid + "' data-filename='" + file.fileName + "' data-type='" + file.image + "' >";
+                    str += "<div><span> " + file.fileName + "</span>";
+                    str += "<button type='button' data-fno=\'"+file.fno+"\' data-file=\'"+fileCallPath+"\' data-type='image' ";
+                    str += "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+                    str += "<img src='/files/display?fileName=exefile.png'></div>";
+                    str += "</li>";
+                }
+            });
+            $(".uploadResult ul").html(str);
+        });
+    })();
+
+    $(document).ready(function(e){
+
+
+        $(".uploadResult").on("click","li", function(e){
+            console.log("view image");
+            var liObj = $(this);
+            var path = encodeURIComponent(liObj.data("path")+"/" + liObj.data("uuid")+"_" + liObj.data("filename"));
+            if(liObj.data("type")){
+                showImage(path.replace(new RegExp(/\\/g),"/"));
+            }else {
+                //download
+                self.location ="/download?fileName="+path
+            }
+        });
+        $(".bigPictureWrapper").on("click", function(e){
+            $(this).hide();
+        });
+        function showImage(fileCallPath){
+            $(".bigPictureWrapper").css("display","flex").show();
+            $(".bigPicture")
+                .html("<img width='40%' height='80%' src='/files/display?fileName="+fileCallPath+"' >")
+                .animate({width:'100%', height: '100%'}, 1000);
+        }
+
+        $(".uploadResult").on("click","button",function (e) {
+            e.preventDefault();
+            var targetLi = $(this).closest("li");
+            targetLi.remove();
+        });
 
         var regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
-        var maxSize = 100*1024*1024; //100MB
+        var maxSize = 10*1024*1024; //10MB
         function checkExtension(fileName, fileSize) {
             if (fileSize >= maxSize) {
                 alert("파일 사이즈 초과");
                 return false;
             }
             if (regex.test(fileName)) {
-                alert("해당 종류의 파일은 업로드할 수 없습니다. \n *(.exe/.sh/.zip/.alz)");
+                alert("해당 종류의 파일은 업로드할 수 없습니다. \n *exe, sh, zip, alz 불가");
                 return false;
             }
             return true;
         }
-        $("#uploadBtn").on("click", function(e) {
-            e.preventDefault();
+
+        $("input[type='file']").change(function(e){
             var formData = new FormData();
             var inputFile = $("input[name='uploadFile']");
             var files = inputFile[0].files;
-            console.log(files);
-            //add filedate to formdata
-            for (var i = 0; i < files.length; i++) {
-                if (!checkExtension(files[i].name, files[i].size)) {
+            for(var i = 0; i < files.length; i++){
+                if(!checkExtension(files[i].name, files[i].size) ){
                     return false;
                 }
                 formData.append("uploadFile", files[i]);
             }
             $.ajax({
-                url: '/files/'+[[${vo.bno}]],
-                type: 'POST',
-                data: formData,
+                url: '/files/upload',
                 processData: false,
                 contentType: false,
+                data:formData,
+                type: 'POST',
                 success: function(result){
-                    alert("Uploaded");
+                    console.log("ok");
+                    console.log(result);
+                    showUploadResult(result); //업로드 결과 처리 함수
                 },
                 error:function (result) {
-                    alert("failed");
-                },
-                beforeSend: function( xhr ) {
-                    xhr.setRequestHeader(header, token);
+                    console.log("fail");
+                    console.log(result);
+                }
+            }); //$.ajax
+
+        });
+
+        function showUploadResult(uploadResultArr){
+
+            if(!uploadResultArr || uploadResultArr.length == 0){ return; }
+
+            var uploadUL = $(".uploadResult ul");
+            var str ="";
+            $(uploadResultArr).each(function(i, obj){
+                //image type
+                if(obj.image){
+                    var fileCallPath =  encodeURIComponent( obj.uploadUrl+ "/s_"+obj.uuid +"_"+obj.fileName);
+                    str += "<li data-path='"+obj.uploadUrl+"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'><div>";
+                    str += "<span> "+ obj.fileName+"</span>";
+                    str += "<button type='button' data-file=\'"+fileCallPath+"\' data-type='image' ";
+                    str += "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+                    str += "<img src='/files/display?fileName="+fileCallPath+"'>";
+                    str += "</div>";
+                    str += "</li>";
+                }else{
+                    var fileCallPath =  encodeURIComponent( obj.uploadUrl+"/"+ obj.uuid +"_"+obj.fileName);
+
+                    str += "<li data-path='"+obj.uploadUrl+"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"' ><div>";
+                    str += "<span> "+ obj.fileName+"</span>";
+                    str += "<button type='button' data-file=\'"+fileCallPath+"\' data-type='file' ";
+                    str += "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+                    str += "<img width='150px' height='100px' src='/files/display?fileName=exefile.png'></a>";
+                    str += "</div>";
+                    str += "</li>";
                 }
             });
-        });
+            uploadUL.append(str);
+        }
+    });
+</script>
+<script th:inline="javascript">
+    $(document).ready(function(){
+
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+
         var formObj = $("#f1");
         $(".delbtn").click(function(){
             formObj.attr("action","delete");
@@ -96,7 +216,17 @@
         $(".modbtn").click(function(){
             formObj.attr("action","modify");
             formObj.attr("method", "post");
-            formObj.submit();
+            var str = "";
+            $(".uploadResult ul li").each(function(i, obj){
+                var jobj = $(obj);
+                console.dir(jobj);
+                str += "<input type='hidden' name='files["+i+"].fileName' value='"+jobj.data("filename")+"'>";
+                str += "<input type='hidden' name='files["+i+"].uuid' value='"+jobj.data("uuid")+"'>";
+                str += "<input type='hidden' name='files["+i+"].uploadUrl' value='"+jobj.data("path")+"'>";
+                str += "<input type='hidden' name='files["+i+"].image' value='"+ jobj.data("type")+"'>";
+            });
+            formObj.append(str).submit();
         });
     });
 </script>
+

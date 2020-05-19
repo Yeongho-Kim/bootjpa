@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:insert="~{fragment/header::header}"></div>
+<style>
+    .uploadResult ul{
+        display:flex;
+        flex-flow: row;
+        justify-content: center;
+        align-items: center;
+    }
+    .uploadResult ul li {
+        list-style: none;
+        padding: 10px;
+        align-content: center;
+        text-align: center;
+    }
+</style>
+<div class='bigPictureWrapper'>
+    <div class='bigPicture'>
+    </div>
+</div>
 <div class="container" id="main">
     <div class="col-md-12 col-sm-12 col-lg-10 col-lg-offset-1">
         <div class="panel panel-default content-main">
@@ -14,8 +32,17 @@
             </div>
             <div class="form-group">
                 <label for="content">내용</label>
-                <textarea name="content" id="content" rows="5" class="form-control" th:text="${vo.content}" th:readonly="readonly"></textarea>
+                <textarea name="content" id="content" rows="10" class="form-control" th:text="${vo.content}" th:readonly="readonly"></textarea>
             </div>
+
+            <div class="panel-heading">첨부파일</div>
+            <div>
+                <div class="form-group uploadResult">
+                    <ul class="alert alert-info">
+                    </ul>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label for="writer">작성자</label>
                 <input name="writer" id="writer" class="form-control" th:value="${vo.writer}" th:readonly="readonly" >
@@ -82,6 +109,30 @@
 
 <div th:insert="~{fragment/footer::footer}"></div>
 <script th:inline="javascript" th:src="@{'/js/reply.js'}"></script>
+<script>
+    (function(){
+        var bno=[[${vo.bno}]];
+        $.getJSON("/files/getList", {bno: bno}, function (arr) {
+            console.log(arr);
+            var str = "";
+            $(arr).each(function (i, file) {
+                //image type
+                if (file.image) {
+                    var fileCallPath = encodeURIComponent(file.uploadUrl + "/s_" + file.uuid + "_" + file.fileName);
+                    str += "<li data-path='" + file.uploadUrl + "' data-uuid='" + file.uuid + "' data-filename='" + file.fileName + "' data-type='" + file.image + "' >";
+                    str += "<div><img src='/files/display?fileName=" + fileCallPath + "'></div>";
+                    str += "</li>";
+                } else {
+                    str += "<li data-path='" + file.uploadUrl + "' data-uuid='" + file.uuid + "' data-filename='" + file.fileName + "' data-type='" + file.image + "' >";
+                    str += "<div><span> " + file.fileName + "</span><br/>";
+                    str += "<img src='/files/display?fileName=exefile.png'></a></div>";
+                    str += "</li>";
+                }
+            });
+            $(".uploadResult ul").html(str);
+        });
+    })();
+</script>
 <script th:inline="javascript">
 
     $(document).ready(function (e){
@@ -93,6 +144,27 @@
         var rno;
         var uid =[[${#authentication.principal.username}]] ;
         var csrf = JSON.parse('[[${_csrf}]]');
+
+        $(".uploadResult").on("click","li", function(e){
+            console.log("view image");
+            var liObj = $(this);
+            var path = encodeURIComponent(liObj.data("path")+"/" + liObj.data("uuid")+"_" + liObj.data("filename"));
+            if(liObj.data("type")){
+                showImage(path.replace(new RegExp(/\\/g),"/"));
+            }else {
+                //download
+                self.location ="/download?fileName="+path
+            }
+        });
+        $(".bigPictureWrapper").on("click", function(e){
+            $(this).hide();
+        });
+        function showImage(fileCallPath){
+            $(".bigPictureWrapper").css("display","flex").show();
+            $(".bigPicture")
+                .html("<img width='40%' height='80%' src='/files/display?fileName="+fileCallPath+"' >")
+                .animate({width:'100%', height: '100%'}, 1000);
+        }
 
         $("#replyTable").on("click", "tr", function(e){
 

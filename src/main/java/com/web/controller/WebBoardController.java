@@ -1,7 +1,9 @@
 package com.web.controller;
 
+import com.web.domain.Files;
 import com.web.domain.WebBoard;
 import com.web.repository.CustomCrudRepository;
+import com.web.repository.FilesRepository;
 import com.web.repository.WebBoardRepository;
 import com.web.vo.PageMaker;
 import com.web.vo.PageVO;
@@ -16,12 +18,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @Controller
 @RequestMapping("/boards")
 public class WebBoardController {
 
     @Autowired
     private CustomCrudRepository boardRepository;
+    @Autowired
+    private FilesRepository filesRepository;
 
     @GetMapping("/list")
     public void list(@ModelAttribute("pageVO") PageVO pageVO, Model model){
@@ -34,8 +43,15 @@ public class WebBoardController {
     @GetMapping("/register")
     public void register(){
     }
+    @Transactional
     @PostMapping("/register")
     public String registerPost(@ModelAttribute("board") WebBoard board, RedirectAttributes rttr){
+        if(board.getFiles()!=null){
+            board.getFiles().forEach(file->{
+                file.setBoard(board);
+                filesRepository.save(file);
+            });
+        }
         boardRepository.save(board);
         rttr.addFlashAttribute("msg","success");
         return "redirect:/boards/list";
@@ -49,9 +65,17 @@ public class WebBoardController {
     public void modify(Long bno, @ModelAttribute("pageVO")PageVO pageVO,Model model){
         boardRepository.findById(bno).ifPresent(board -> model.addAttribute("vo",board));
     }
+    @Transactional
     @PostMapping("/modify")
     public String modifyPost(WebBoard board, PageVO vo, RedirectAttributes rttr ){
         boardRepository.findById(board.getBno()).ifPresent( origin ->{
+            if(board.getFiles()!=null){
+                filesRepository.deleteAllByBoard(origin);
+                board.getFiles().forEach(file->{
+                    file.setBoard(board);
+                    filesRepository.save(file);
+                });
+            }
             origin.setTitle(board.getTitle());
             origin.setContent(board.getContent());
             boardRepository.save(origin);

@@ -30,4 +30,7 @@ public class WebBoard {
 
     @OneToMany(mappedBy = "board",fetch = FetchType.LAZY)
     private List<WebReply> replies;
+
+    @OneToMany(mappedBy = "board",fetch = FetchType.LAZY)
+    private List<Files> files;
 }
