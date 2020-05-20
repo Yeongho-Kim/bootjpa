@@ -152,8 +152,9 @@
             if(liObj.data("type")){
                 showImage(path.replace(new RegExp(/\\/g),"/"));
             }else {
-                //download
-                self.location ="/download?fileName="+path
+                if(confirm("다운로드 하시겠습니까?")){
+                    self.location ="/files/download?fileName="+path
+                }
             }
         });
         $(".bigPictureWrapper").on("click", function(e){

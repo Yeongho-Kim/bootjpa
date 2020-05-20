@@ -12,4 +12,7 @@ public interface FilesRepository extends CrudRepository<Files,Long> {
     List<Files> getRepliesofBoard(WebBoard board);
 
     void deleteAllByBoard(WebBoard board);
+
+    @Query("select f from Files f where f.uploadUrl=?1")
+    List<Files> getOldFiles(String yesterdayFolder);
 }

@@ -111,15 +111,12 @@
             }); //$.ajax
 
         });
-        $(".uploadResult").on("click","li", function(e){
+        $(".uploadResult").on("click","li img", function(e){
             console.log("view image");
             var liObj = $(this);
             var path = encodeURIComponent(liObj.data("path")+"/" + liObj.data("uuid")+"_" + liObj.data("filename"));
             if(liObj.data("type")){
                 showImage(path.replace(new RegExp(/\\/g),"/"));
-            }else {
-                //download
-                self.location ="/download?fileName="+path
             }
         });
         $(".bigPictureWrapper").on("click", function(e){

@@ -16,7 +16,7 @@
                             <img th:if="${#authentication.principal.thumbnailUrl!=''}" th:src="@{/users/thumbnail(filename=${#authentication.principal.thumbnailUrl})}"/>
                             <img th:if="${#authentication.principal.thumbnailUrl==''}" th:src="@{/users/thumbnail(filename=Anonymous.jpg)}"/>
                         </a>
-                        <h4>[[${#authentication.principal.userName}]]<small>&nbsp;&nbsp;&nbsp;&nbsp;성공회대학교 소프트웨어공학과 졸업</small></h4>
+                        <h4>[[${#authentication.principal.userName}]]<small>성공회대학교 소프트웨어공학과 졸업</small></h4>
                         <i class="glyphicon glyphicon-envelope"></i>
                         <input type="text" id="emailCopy" class="btn btn-default" th:value="${#authentication.principal.userEmail}" readonly="readonly">
                         <a id="copyResult" style="font-size: small"></a>

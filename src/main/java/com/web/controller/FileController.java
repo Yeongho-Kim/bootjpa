@@ -5,6 +5,8 @@ import com.web.domain.WebBoard;
 import com.web.repository.FilesRepository;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -80,6 +83,27 @@ public class FileController {
         } // end for
         return list;
     }
+    @GetMapping("/download")
+    @ResponseBody
+    public ResponseEntity<Resource> downloadFile(String fileName){
+        String uploadFolder = "C:\\upload\\board\\";
+        Resource resource=new FileSystemResource(uploadFolder+fileName);
+        if(resource.exists()==false){
+            return  new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
+        }
+        String resourceName=resource.getFilename();
+        String resourceOriginalName=resourceName.substring(resourceName.indexOf("_")+1);
+        HttpHeaders headers=new HttpHeaders();
+        try{
+            String downloadName=null;
+            downloadName=new String(resourceOriginalName.getBytes("UTF-8"),"ISO-8859-1");
+            headers.add("Content-Disposition", "attachment; filename=" + downloadName);
+        }catch (UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<Resource>(resource,headers,HttpStatus.OK);
+    }
+
     @GetMapping("/display")
     @ResponseBody
     public ResponseEntity<byte[]> getFile(String fileName) {

@@ -11,7 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -31,11 +34,17 @@ class BootjpaApplicationTests {
 
 
     @Test
-    public void test(){
-        WebBoard board=boardRepository.findById(301L).get();
-        System.out.println(board.getTitle());
-        System.out.println(board.getFiles().isEmpty());
+    public void test2(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        String str = sdf.format(cal.getTime());
+        str=str.replace("-", File.separator);
+        System.out.println(str);
     }
+
+
+
     @Test
     void boardInsert() {
         IntStream.range(0,300).forEach(i->{
