@@ -98,7 +98,7 @@ public class UserController {
     @ResponseBody
     public FileDTO upload(MultipartFile uploadFile){
 
-        String uploadFolder="C:\\upload\\profile";
+        String uploadFolder="/home/ubuntu/apps/upload/profile/";
         String uploadFolderPath=getFolder();
         String uploadFileName=uploadFile.getOriginalFilename();
 
@@ -131,7 +131,7 @@ public class UserController {
     @GetMapping("/thumbnail")
     @ResponseBody
     public ResponseEntity<byte[]> getFile(String filename) {
-        File file = new File("C:\\upload\\profile\\" + filename);
+        File file = new File("/home/ubuntu/apps/upload/profile/" + filename);
         ResponseEntity<byte[]> result = null;
         try {
             HttpHeaders header = new HttpHeaders();
@@ -147,7 +147,7 @@ public class UserController {
     @ResponseBody
     public String deleteImg(String thumbPath,String uNum){
         User user=usersRepository.findById((Long.parseLong(uNum))).get();
-        String uploadFolder="C:\\upload\\profile\\";
+        String uploadFolder="/home/ubuntu/apps/upload/profile/";
         System.out.println("☆★☆★☆★☆★"+thumbPath+",,,,,,,,Unum:"+uNum);
         try{
             String uploadFileName= (URLDecoder.decode(thumbPath, "UTF-8")).toString().replace("/","\\");

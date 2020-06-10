@@ -44,7 +44,7 @@ public class FileController {
     public List<Files> uploadAjaxPost(MultipartFile[] uploadFile) {
 
         List<Files> list = new ArrayList<>();
-        String uploadFolder = "C:\\upload\\board\\";
+        String uploadFolder = "/home/ubuntu/apps/upload/board/";
 
         String uploadFolderPath = getFolder();
 
@@ -86,7 +86,7 @@ public class FileController {
     @GetMapping("/download")
     @ResponseBody
     public ResponseEntity<Resource> downloadFile(String fileName){
-        String uploadFolder = "C:\\upload\\board\\";
+        String uploadFolder = "/home/ubuntu/apps/upload/board/";
         Resource resource=new FileSystemResource(uploadFolder+fileName);
         if(resource.exists()==false){
             return  new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
@@ -107,7 +107,7 @@ public class FileController {
     @GetMapping("/display")
     @ResponseBody
     public ResponseEntity<byte[]> getFile(String fileName) {
-        File file = new File("c:\\upload\\board\\" + fileName);
+        File file = new File("/home/ubuntu/apps/upload/board/" + fileName);
         ResponseEntity<byte[]> result = null;
         try {
             HttpHeaders header = new HttpHeaders();
@@ -122,7 +122,7 @@ public class FileController {
     @PostMapping("/delete")
     @ResponseBody
     public String deleteFile(String fileName, String type) {
-        String uploadFolder="C:\\upload\\board\\";
+        String uploadFolder="/home/ubuntu/apps/upload/board/";
 
         try {
             String uploadFileName= (URLDecoder.decode(fileName, "UTF-8")).toString().replace("/","\\");
@@ -143,7 +143,7 @@ public class FileController {
     @DeleteMapping("/delete")
     @ResponseBody
     public String deleteFileDB(String fileName, String type,Long fno) {
-        String uploadFolder="C:\\upload\\board\\";
+        String uploadFolder="/home/ubuntu/apps/upload/board/";
 
         try {
             String uploadFileName= (URLDecoder.decode(fileName, "UTF-8")).toString().replace("/","\\");
