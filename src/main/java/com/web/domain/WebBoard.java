@@ -28,9 +28,9 @@ public class WebBoard {
     @CreationTimestamp
     private Timestamp updatedate;
 
-    @OneToMany(mappedBy = "board",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "board",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<WebReply> replies;
 
-    @OneToMany(mappedBy = "board",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "board",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Files> files;
 }

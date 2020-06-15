@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.file.Files;
+import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,9 +57,9 @@ public class UserController {
         User user = usersRepository.findById(uNum).get();
         model.addAttribute("user",user);
     }
-    @GetMapping("/update/{uNum}")
-    public String userUpdate(@PathVariable Long uNum, Model model){
-        model.addAttribute("user", usersRepository.findById(uNum).get());
+    @GetMapping("/update")
+    public String userUpdate(Principal principal, Model model){
+        model.addAttribute("user", usersRepository.findUserByUserId(principal.getName()));
         return "/users/update";
     }
     @PostMapping("/update")
